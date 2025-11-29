@@ -18,9 +18,15 @@ function sp_cv_register_rest() {
      * ROUTE #1 — Coat Viewer Models (meta fields)
      * -----------------------------------------
      */
-    register_rest_route('spcv/v1', '/models', [
-        'methods' => 'GET',
-        'callback' => function () {
+    // Get silhouettes from manifest
+register_rest_route('spcv/v1', '/silhouettes', [
+    'methods'  => 'GET',
+    'callback' => function() {
+        return spcv_get_manifest();
+    },
+    'permission_callback' => '__return_true'
+]);
+
 
             $posts = get_posts([
                 'post_type'   => 'cv_model',

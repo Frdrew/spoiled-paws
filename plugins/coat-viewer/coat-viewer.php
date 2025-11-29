@@ -13,6 +13,9 @@ define('SP_CV_URL', plugin_dir_url(__FILE__));
 define('SP_CV_SVG_DIR', SP_CV_DIR . 'assets/images/silhouettes/svg/');
 define('SP_CV_SVG_URL', SP_CV_URL . 'assets/images/silhouettes/svg/');
 define('SP_CV_MANIFEST', SP_CV_SVG_DIR . 'manifest.json');
+define('SP_CV_SVG_DIR', SP_CV_DIR . 'assets/images/silhouettes/svg/');
+define('SP_CV_SVG_URL', SP_CV_URL . 'assets/images/silhouettes/svg/');
+define('SP_CV_MANIFEST', SP_CV_SVG_DIR . 'manifest.json');
 
 require_once SP_CV_DIR . 'inc/cpt.php';
 require_once SP_CV_DIR . 'inc/meta.php';

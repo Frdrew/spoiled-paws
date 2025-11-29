@@ -1,58 +1,18 @@
 {
   "silhouettes": [
-    {
-      "id": "golden-retriever",
-      "name": "Golden Retriever",
-      "file": "golden-retriever.svg",
-      "views": { "front": null, "left": null, "right": null }
-    },
-    {
-      "id": "poodle-sit",
-      "name": "Poodle (Sitting)",
-      "file": "poodle-sit.svg",
-      "views": { "front": null, "left": null, "right": null }
-    },
-    {
-      "id": "small-terrier",
-      "name": "Small Terrier",
-      "file": "small-terrier.svg",
-      "views": { "front": null, "left": null, "right": null }
-    },
-    {
-      "id": "dachshund-long",
-      "name": "Dachshund (Long Body)",
-      "file": "dachshund-long.svg",
-      "views": { "front": null, "left": null, "right": null }
-    },
-    {
-      "id": "german-shepherd-sit",
-      "name": "German Shepherd (Sitting)",
-      "file": "german-shepherd-sit.svg",
-      "views": { "front": null, "left": null, "right": null }
-    },
-    {
-      "id": "poodle-standard",
-      "name": "Poodle (Standard Standing)",
-      "file": "poodle-standard.svg",
-      "views": { "front": null, "left": null, "right": null }
-    },
-    {
-      "id": "chihuahua-curly-tail",
-      "name": "Chihuahua (Curly Tail)",
-      "file": "chihuahua-curly-tail.svg",
-      "views": { "front": null, "left": null, "right": null }
-    },
-    {
-      "id": "labrador",
-      "name": "Labrador",
-      "file": "labrador.svg",
-      "views": { "front": null, "left": null, "right": null }
-    },
-    {
-      "id": "shepherd-ears-up",
-      "name": "Shepherd (Ears Up)",
-      "file": "shepherd-ears-up.svg",
-      "views": { "front": null, "left": null, "right": null }
-    }
+    { "id": "xs-chihuahua", "breed": "Chihuahua", "size": "XS", "file": "xs-chihuahua.svg" },
+    { "id": "xs-yorkie", "breed": "Yorkshire Terrier", "size": "XS", "file": "xs-yorkie.svg" },
+
+    { "id": "s-dachshund", "breed": "Dachshund", "size": "S", "file": "s-dachshund.svg" },
+    { "id": "s-frenchbulldog", "breed": "French Bulldog", "size": "S", "file": "s-frenchbulldog.svg" },
+
+    { "id": "m-beagle", "breed": "Beagle", "size": "M", "file": "m-beagle.svg" },
+    { "id": "m-cockerspaniel", "breed": "Cocker Spaniel", "size": "M", "file": "m-cockerspaniel.svg" },
+
+    { "id": "l-labrador", "breed": "Labrador", "size": "L", "file": "l-labrador.svg" },
+    { "id": "l-germanshepherd", "breed": "German Shepherd", "size": "L", "file": "l-germanshepherd.svg" },
+
+    { "id": "xl-greatdane", "breed": "Great Dane", "size": "XL", "file": "xl-greatdane.svg" },
+    { "id": "xl-saintbernard", "breed": "Saint Bernard", "size": "XL", "file": "xl-saintbernard.svg" }
   ]
 }

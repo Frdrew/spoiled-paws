@@ -1,47 +1,65 @@
-document.addEventListener("DOMContentLoaded", async () => {
-    const root = document.querySelector(".spcv-viewer-root");
-    if (!root) return;
+<?php
+if (!defined('ABSPATH')) exit;
 
-    // Load silhouettes from manifest
-    const silhouettes = await fetch("/wp-json/spcv/v1/silhouettes")
-        .then(r => r.json())
-        .catch(() => []);
+// Load silhouettes manifest
+function spcv_get_manifest() {
+    if (!file_exists(SP_CV_MANIFEST)) return [];
 
-    if (!silhouettes.length) {
-        root.innerHTML = "No silhouettes found. Add SVGs to the plugin folder.";
-        return;
-    }
+    $json = file_get_contents(SP_CV_MANIFEST);
+    $data = json_decode($json, true);
 
-    // Default selection = first silhouette
-    let current = silhouettes[0];
+    return $data['silhouettes'] ?? [];
+}
 
-    // Build dropdown
-    let dropdownHTML = `
-        <select id="spcv-selector">
-            ${silhouettes.map(s => `
-                <option value="${s.file}">${s.name}</option>
-            `).join('')}
-        </select>
-    `;
+function sp_cv_register_rest() {
 
-    // Viewer HTML
-    let viewerHTML = `
-        <div class="spcv-container">
-            <img id="spcv-silhouette" class="spcv-silhouette" src="/wp-content/plugins/coat-viewer/assets/images/silhouettes/svg/${current.file}">
-            <div class="spcv-view spcv-view-front"></div>
-            <div class="spcv-view spcv-view-left" style="display:none;"></div>
-            <div class="spcv-view spcv-view-right" style="display:none;"></div>
+    /**
+     * -----------------------------------------
+     * ROUTE #1 — Coat Viewer Models (meta fields)
+     * -----------------------------------------
+     */
+    register_rest_route('spcv/v1', '/models', [
+        'methods' => 'GET',
+        'callback' => function () {
 
-            <button onclick="spcvRotate('left')">◀</button>
-            <button onclick="spcvRotate('right')">▶</button>
-        </div>
-    `;
+            $posts = get_posts([
+                'post_type'   => 'cv_model',
+                'numberposts' => -1
+            ]);
 
-    root.innerHTML = dropdownHTML + viewerHTML;
+            $data = [];
 
-    // Dropdown listener for switching silhouettes
-    document.querySelector("#spcv-selector").addEventListener("change", (e) => {
-        document.querySelector("#spcv-silhouette").src =
-            `/wp-content/plugins/coat-viewer/assets/images/silhouettes/svg/${e.target.value}`;
-    });
-});
+            foreach ($posts as $p) {
+                $data[] = [
+                    'id'        => $p->ID,
+                    'title'     => $p->post_title,
+                    'silhouette'=> get_post_meta($p->ID, 'cv_silhouette', true),
+                    'front'     => get_post_meta($p->ID, 'cv_view_front', true),
+                    'left'      => get_post_meta($p->ID, 'cv_view_left', true),
+                    'right'     => get_post_meta($p->ID, 'cv_view_right', true),
+                ];
+            }
+
+            return $data;
+        },
+        'permission_callback' => '__return_true'
+    ]);
+
+
+
+    /**
+     * -----------------------------------------
+     * ROUTE #2 — Silhouettes from manifest.json
+     * -----------------------------------------
+     */
+    register_rest_route('spcv/v1', '/silhouettes', [
+        'methods'  => 'GET',
+        'callback' => function() {
+            return spcv_get_manifest();
+        },
+        'permission_callback' => '__return_true'
+    ]);
+
+}
+
+add_action('rest_api_init', 'sp_cv_register_rest');
