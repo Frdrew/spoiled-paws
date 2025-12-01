@@ -1,0 +1,100 @@
+name: Spoiled Paws CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      # -------------------------
+      # CHECKOUT REPO
+      # -------------------------
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      # -------------------------
+      # INSTALL NODE (for minifiers)
+      # -------------------------
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      # -------------------------
+      # INSTALL MINIFIER PACKAGES
+      # -------------------------
+      - name: Install Minifiers
+        run: |
+          npm install -g clean-css-cli terser
+
+      # -------------------------
+      # MINIFY ALL CSS & JS
+      # -------------------------
+      - name: Minify CSS & JS
+        run: |
+          find . -name "*.css" ! -name "*.min.css" -exec sh -c 'cleancss -o "$1".min.css "$1"' _ {} \;
+          find . -name "*.js"  ! -name "*.min.js"  -exec sh -c 'terser "$1" -o "$1".min.js"' _ {} \;
+
+      # -------------------------
+      # BUILD PLUGINS
+      # -------------------------
+      - name: Build Coat Viewer Plugin
+        run: |
+          cd plugins/coat-viewer
+          zip -r ../../build/spoiled-paws-coat-viewer.zip . -x "*.git*" "*node_modules*" "*.zip"
+
+      - name: Build Custom Order Builder Plugin
+        run: |
+          cd plugins/custom-order-builder
+          zip -r ../../build/spoiled-paws-custom-order-builder.zip . -x "*.git*" "*node_modules*" "*.zip"
+
+      - name: Build Mom Dashboard Plugin
+        run: |
+          cd plugins/mom-dashboard
+          zip -r ../../build/spoiled-paws-mom-dashboard.zip . -x "*.git*" "*node_modules*" "*.zip"
+
+      # -------------------------
+      # BUILD THEME
+      # -------------------------
+      - name: Build Theme
+        run: |
+          cd theme/spoiled-paws-desert-fse
+          zip -r ../../build/spoiled-paws-desert-fse.zip . -x "*.git*" "*node_modules*" "*.zip"
+
+      # -------------------------
+      # ARTIFACT STORAGE
+      # -------------------------
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: spoiled-paws-packages
+          path: build/*.zip
+
+
+  # --------------------------------------------
+  # OPTIONAL JOB: ATTACH ZIPs TO RELEASES
+  # --------------------------------------------
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    if: github.event_name == 'release'
+
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: spoiled-paws-packages
+          path: release_pkg
+
+      - name: Upload ZIPs to Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release_pkg/*.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
